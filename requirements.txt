@@ -1,0 +1,17 @@
+# Requirements cho hệ thống nhận dạng biển số xe với OCR
+# Các thư viện cơ bản
+opencv-python>=4.5.0
+numpy>=1.19.0
+
+# OCR libraries
+pytesseract>=0.3.8
+easyocr>=1.6.0
+
+# Image processing
+Pillow>=8.0.0
+
+# Machine learning (cho KNN)
+scikit-learn>=1.0.0
+
+# Utilities
+typing-extensions>=3.10.0 
