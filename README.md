@@ -29,6 +29,10 @@ Hệ thống nhận dạng biển số xe đã được nâng cấp với tích 
 
 ## 🛠️ Cài Đặt
 
+# Cài đặt dependencies
+pip3 install -r requirements.txt
+
+
 ### 1. Cài đặt Python packages:
 ```bash
 pip3 install opencv-python numpy pytesseract Pillow scikit-learn
