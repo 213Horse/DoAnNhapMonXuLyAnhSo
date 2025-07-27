@@ -42,6 +42,9 @@ def recognize_video4_final():
     all_recognition_results = []
     
     print(f"\n🎯 Processing video for license plate recognition...")
+    print(f"   Press 'q' to quit, 'p' to pause/resume")
+    
+    paused = False
     
     for frame_num in range(total_frames):
         ret, frame = cap.read()
@@ -53,6 +56,9 @@ def recognize_video4_final():
         if frame_num % 30 == 0:
             progress = (frame_num / total_frames) * 100
             print(f"   Progress: {progress:.1f}% ({frame_num}/{total_frames})")
+        
+        # Tạo frame để hiển thị
+        display_frame = frame.copy()
         
         # YOLO detection
         try:
@@ -78,13 +84,57 @@ def recognize_video4_final():
                         }
                         all_recognition_results.append(result)
                         
+                        # Vẽ bounding box và text lên frame
+                        x1, y1, x2, y2 = bbox
+                        cv2.rectangle(display_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        
+                        # Hiển thị text nhận dạng
+                        text = f"{ocr_result} ({ocr_confidence:.2f})"
+                        text_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
+                        cv2.rectangle(display_frame, (x1, y1-30), (x1+text_size[0], y1), (0, 255, 0), -1)
+                        cv2.putText(display_frame, text, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+                        
                 except Exception as e:
-                    pass
+                    # Vẽ bounding box cho detection nhưng không có OCR
+                    x1, y1, x2, y2 = bbox
+                    cv2.rectangle(display_frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                    cv2.putText(display_frame, f"Detected ({confidence:.2f})", (x1, y1-10), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
                     
         except Exception as e:
             pass
+        
+        # Hiển thị thông tin frame
+        cv2.putText(display_frame, f"Frame: {frame_num}/{total_frames}", (10, 30), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.putText(display_frame, f"Detections: {len(all_recognition_results)}", (10, 60), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        
+        # Hiển thị frame
+        cv2.imshow('License Plate Recognition - video4.mp4', display_frame)
+        
+        # Xử lý phím
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            print(f"\n⏹️  Stopped by user")
+            break
+        elif key == ord('p'):
+            paused = not paused
+            print(f"   {'⏸️  Paused' if paused else '▶️  Resumed'}")
+        
+        # Nếu đang pause, chờ phím
+        while paused:
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                print(f"\n⏹️  Stopped by user")
+                break
+            elif key == ord('p'):
+                paused = False
+                print(f"   ▶️  Resumed")
+                break
     
     cap.release()
+    cv2.destroyAllWindows()
     
     # Phân tích kết quả
     print(f"\n📊 Recognition Analysis:")
@@ -107,7 +157,8 @@ def recognize_video4_final():
             
             # Lưu ảnh biển số tốt nhất
             if i == 0:  # Kết quả tốt nhất
-                best_plate_path = "best_recognized_plate.jpg"
+                best_plate_path = "Image/best_recognized_plate.jpg"
+                os.makedirs("Image", exist_ok=True)
                 cv2.imwrite(best_plate_path, result['plate_image'])
                 print(f"      Saved best plate: {best_plate_path}")
         

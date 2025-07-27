@@ -309,3 +309,114 @@ DoAnNhapMonXuLyAnhSo/
   Ảnh biển số được nhận dạng tốt nhất, dùng để minh họa kết quả.
 
 --- 
+
+
+
+
+
+LUỒNG HOẠT ĐỘNG VÀ XỬ LÝ DỰ ÁN NHẬN DẠNG BIỂN SỐ XE
+�� TỔNG QUAN LUỒNG XỬ LÝ
+BƯỚC 1: INPUT DATA (Dữ liệu đầu vào)
+Input: Ảnh hoặc video chứa biển số xe
+Files: models/video4.mp4, models/*.jpg, models/*.png
+Model: models/license_plate_detector.pt
+BƯỚC 2: YOLO DETECTION (Phát hiện biển số)
+Module: YOLO_Detection.py
+Process:
+Load YOLO model từ license_plate_detector.pt
+Predict bounding boxes cho biển số
+Extract plate regions (cắt vùng biển số)
+Confidence scoring (đánh giá độ tin cậy)
+BƯỚC 3: IMAGE PREPROCESSING (Tiền xử lý ảnh)
+Module: OCR_Module_Basic.py
+Process:
+Grayscale conversion (chuyển sang thang xám)
+Image scaling (tăng kích thước 3x)
+CLAHE enhancement (tăng độ tương phản)
+Otsu binarization (nhị phân hóa)
+BƯỚC 4: OCR RECOGNITION (Nhận dạng ký tự)
+Module: OCR_Module_Basic.py
+Process:
+Tesseract OCR engine
+Config: --oem 3 --psm 8
+Text cleaning (làm sạch text)
+Confidence calculation (tính độ tin cậy)
+BƯỚC 5: SMART PROCESSING (Xử lý thông minh)
+Module: smart_ocr_system.py
+Process:
+8 Vietnamese plate patterns (8 mẫu biển số VN)
+Character correction (sửa lỗi ký tự)
+Format validation (kiểm tra định dạng)
+Adaptive processing (xử lý thích ứng)
+BƯỚC 6: OUTPUT (Kết quả)
+Output:
+Recognized license plate text (text biển số)
+Confidence scores (độ tin cậy)
+Processed images saved to Image/ (ảnh đã lưu)
+Summary reports (báo cáo tổng kết)
+🔄 LUỒNG DỮ LIỆU CHI TIẾT
+Raw Input → Detected Plates
+Input: Ảnh/video gốc
+Process: YOLO detection
+Output: Vùng ảnh chứa biển số
+Detected Plates → Processed Images
+Input: Vùng ảnh biển số
+Process: Image preprocessing
+Output: Ảnh đã xử lý
+Processed Images → OCR Text
+Input: Ảnh đã xử lý
+Process: Tesseract OCR
+Output: Text thô
+OCR Text → Cleaned Text
+Input: Text thô từ OCR
+Process: Text cleaning
+Output: Text đã làm sạch
+Cleaned Text → Final Result
+Input: Text đã làm sạch
+Process: Smart processing
+Output: Kết quả cuối cùng
+Final Result → Output Files
+Input: Kết quả cuối
+Process: Save results
+Output: Files trong Image/ + reports
+�� CẤU TRÚC FILE
+Main Scripts
+smart_ocr_system.py - Hệ thống OCR thông minh
+recognize_video4_final.py - Xử lý video
+Core Modules
+YOLO_Detection.py - Module phát hiện biển số
+OCR_Module_Basic.py - Module nhận dạng ký tự
+Input Files
+models/video4.mp4 - Video test
+models/*.jpg, *.png - Ảnh test
+models/license_plate_detector.pt - Model YOLO
+Output Files
+Image/*.jpg - Ảnh kết quả
+video4_recognition_summary.txt - Báo cáo
+🎨 SƠ ĐỒ VISUAL
+Flow Diagram (Sơ đồ luồng)
+Apply to PROJECT_STRU...
+)
+Data Flow (Luồng dữ liệu)
+Apply to PROJECT_STRU...
+Files
+File Structure (Cấu trúc file)
+Apply to PROJECT_STRU...
+Files
+�� CÁC THÀNH PHẦN CHÍNH
+Colors (Màu sắc)
+Input: #E3F2FD (Xanh nhạt)
+Detection: #FFF3E0 (Cam nhạt)
+Processing: #F3E5F5 (Tím nhạt)
+OCR: #E8F5E8 (Xanh lá nhạt)
+Smart: #FFEBEE (Đỏ nhạt)
+Output: #F1F8E9 (Xanh lá đậm)
+Arrows (Mũi tên)
+Style: ->
+Color: Black
+Linewidth: 3
+Shrink: 15
+Boxes (Hộp)
+Style: Rounded rectangles
+Border: 2px
+Padding: 0.1
